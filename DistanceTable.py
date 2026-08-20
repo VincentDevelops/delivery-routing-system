@@ -1,0 +1,4 @@
+# DistanceTable
+
+class DistanceTable:
+    ...
