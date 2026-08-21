@@ -19,6 +19,7 @@ class Package:
         self.status = None
         self.note = None
         self.delivery_time = None
+        self.full_address = None
 
         @property
         def id(self):
