@@ -10,9 +10,10 @@ class Truck:
 
         self.packages = []
         self.priority_packages = []
+        self.current_delivery = None
+
         self.current_time = self.__start_time        
         self.location = location
-        self.current_delivery = None
 
     @property
     def number(self):
@@ -36,7 +37,11 @@ class Truck:
 
     def delivery_package():
         ...
-        
+    
+    def update_time(self, distance):
+        travel_time = (distance / self.speed) * 60 # in minutes
+        self.current_time += travel_time 
+
 
 
 # load trucks
