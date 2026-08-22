@@ -35,7 +35,7 @@ class Truck:
         self.update_time(distance)
         self.location = location
 
-    def delivery_package():
+    def deliver_package():
         ...
     
     def update_time(self, distance):

@@ -36,7 +36,6 @@ class DistanceTable:
             csvreader = csv.reader(file)
 
             i = 0
-
             for row in csvreader:
                 for j in range(27):
                     distance = row[j].strip()
@@ -48,10 +47,9 @@ class DistanceTable:
 
                     self.matrix[i][j] = distance
 
-                    # print(f"{i}-{j}: {self.matrix[i][j]}")
-
                 i += 1
 
+    #assumes csv is in specific format
     def load_addresses(self, file_path):
         with open(file_path, 'r') as file:
             csvreader = csv.reader(file)
