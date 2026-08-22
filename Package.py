@@ -1,13 +1,5 @@
 # Package.py
 
-# delivery address
-# delivery deadline
-# delivery city
-# delivery zip code
-# package weight
-# delivery status (i.e., delayed, at the hub, en route, or delivered), including the delivery time
-
-
 class Package:
     def __init__(self, id):
         self.__id = id
@@ -22,6 +14,7 @@ class Package:
         self.restriction_data = None
         self.delivery_time = None
         self.full_address = None
+        self.assigned_to_truck = None
 
     @property
     def id(self):

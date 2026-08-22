@@ -65,13 +65,6 @@ class PackageLoader:
                 package.restriction_data[value] = int(package.restriction_data[value])
         else:
             package.restriction_data = int(package.note[1])
-
-    # first pass through for priority trucks (early delivery)
-    # second passthrough for other restrictions
-    # third truck gets remainder of packages
-    def load_trucks(self,trucks):
-        ...
-            
             
 
     def hr_to_min(self, time):
@@ -89,3 +82,62 @@ class PackageLoader:
             hour = 0
 
         return (hour * 60) + minute        
+
+    def load_trucks(self, trucks):
+        truck1 = None
+        truck2 = None
+        truck3 = None
+
+        for truck in trucks:
+            if truck.number == 1:
+                truck1 = truck
+            elif truck.number == 2:
+                truck2 = truck
+            elif truck.number == 3:
+                truck3 = truck
+
+        # Manual package assignments
+        truck1_ids = [
+            1, 4, 7, 13, 14, 15, 16, 19,
+            20, 21, 29, 31, 34, 39, 40
+        ]
+
+        truck2_ids = [
+            2, 3, 5, 8, 18,
+            30, 33, 36, 37, 38
+        ]
+
+        truck3_ids = [
+            6, 9, 10, 11, 12, 17, 22, 23,
+            24, 25, 26, 27, 28, 32, 35
+        ]
+
+        # Load Truck 1
+        for package_id in truck1_ids:
+            package = self.package_table.get(package_id)
+
+            if package.deadline is not None:
+                truck1.priority_packages.append(package)
+            else:
+                truck1.packages.append(package)
+
+        # Load Truck 2
+        for package_id in truck2_ids:
+            package = self.package_table.get(package_id)
+
+            if package.deadline is not None:
+                truck2.priority_packages.append(package)
+            else:
+                truck2.packages.append(package)
+
+        # Load Truck 3
+        for package_id in truck3_ids:
+            package = self.package_table.get(package_id)
+
+            if package.deadline is not None:
+                truck3.priority_packages.append(package)
+            else:
+                truck3.packages.append(package)
+
+
+

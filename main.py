@@ -4,28 +4,22 @@
 from DistanceTable import DistanceTable
 from PackageLoader import PackageLoader
 from HashTable import HashTable
+from Truck import Truck
 
-table = DistanceTable()
+distance_table = DistanceTable()
 
-table.load_distances("./data/distance_table.csv")
-table.load_addresses("./data/address_table.csv")
-
+distance_table.load_distances("./data/distance_table.csv")
+distance_table.load_addresses("./data/address_table.csv")
 
 
 package_table = HashTable()
 package_loader = PackageLoader(package_table)
-
 package_loader.load_packages("./data/package_table.csv")
 
-town1 = package_loader.package_ids[0]
-town2 = package_loader.package_ids[4]
-print(town1)
-print(town2)
+truck1 = Truck(1, 480, distance_table.addresses[0], distance_table)
+truck2 = Truck(2, 480, distance_table.addresses[0], distance_table)
+truck3 = Truck(3, 480, distance_table.addresses[0], distance_table)
 
-town1 = package_table.get(town1).full_address
-town2 = package_table.get(town2).full_address
+package_loader.load_trucks([truck1, truck2, truck3])
 
-
-print(table.get_distance_between(town1, town2))
-
-print()
+truck1.deliver_packages()
