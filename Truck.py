@@ -2,6 +2,7 @@
 
 from DeliveryStatus import DeliveryStatus
 
+# Represents one delivery truck and tracks packages, time, location, and mileage
 class Truck:
     def __init__(self, truck_number, time, location, distance_table, package_table):
         
@@ -34,13 +35,14 @@ class Truck:
     def is_empty(self):
         return len(self.packages) == 0 and len(self.priority_packages) == 0
 
+    # Moves truck to a new location and updates time and mileage
     def travel_to(self, location):
         distance = self.__distance_table.get_distance_between(self.location, location)
         self.update_time(distance)
         self.total_mileage += distance
         self.location = location
 
-
+    # Marks current package as delivered and records delivery time
     def deliver_package(self):
         self.current_delivery.status = DeliveryStatus.DELIVERED
         self.current_delivery.delivery_time = self.current_time
@@ -55,8 +57,10 @@ class Truck:
     def deliver_non_priority_packages(self):
         self.nearest_neighbor_delivery(self.packages)
 
+    # Delivers packages using the nearest neighbor algorithm
     def nearest_neighbor_delivery(self, packages):
         while (len(packages) != 0):
+            # Updates package 9 address once the corrected address becomes available
             if self.current_time >= 620:
                 pkg = self.__package_table.get(9)
                 if pkg.address != "410 S State St":
@@ -65,6 +69,7 @@ class Truck:
                     pkg.zip = "84111"
                     pkg.full_address = "410 S State St (84111)"
 
+            # Finds the package with the shortest distance from the truck's current location
             closest_package = min(
                 packages,
                 key=lambda package: self.__distance_table.get_distance_between(
@@ -79,10 +84,12 @@ class Truck:
             packages.remove(self.current_delivery)
 
 
+    # Updates truck time based on distance traveled at 18 mph
     def update_time(self, distance):
         travel_time = (distance / self.speed) * 60 # in minutes
         self.current_time += travel_time 
     
+    # Converts minutes since midnight into a readable clock time
     def min_to_hr(self, minutes):
         hour = int(minutes // 60)
         minute = int(minutes % 60)
@@ -96,6 +103,7 @@ class Truck:
 
         return f"{hour}:{minute:02d} {period}"
     
+    # Marks loaded packages as en route and records their departure time
     def set_packages_en_route(self, packages):
         for package in packages:
             package.status = DeliveryStatus.EN_ROUTE

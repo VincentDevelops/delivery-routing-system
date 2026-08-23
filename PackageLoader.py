@@ -11,6 +11,7 @@ class PackageLoader:
         self.package_table = hash_table
         self.package_ids = []
 
+    # Loads package data from the csv file into the hash table
     def load_packages(self, file_path):
         with open(file_path, "r") as file:
             csvreader = csv.reader(file)
@@ -20,7 +21,7 @@ class PackageLoader:
                 self.package_table.insert(package)
                 self.package_ids.append(package.id)
 
-
+    # creates a package object from one row of csv data
     def create_package(self, row):
         package_id = int(row[0])
         package = Package(package_id)
@@ -31,12 +32,15 @@ class PackageLoader:
         package.weight = row[6]
         package.full_address = f"{row[1]} ({row[4]})"
 
+        # Converts deadline to minutes unless package is due by end of day
         if (row[5] != "EOD"):
             package.deadline = self.hr_to_min(row[5])
 
+        # Parses any special delivery restriction
         if row[7] != "":
             self.parse_note(package, row[7])
 
+        # Delayed packages start as delayed, all others start at the hub
         if (package.restriction_type == RestrictionType.DELAYED_UNTIL):
             package.status = DeliveryStatus.DELAYED
         else:
@@ -45,7 +49,7 @@ class PackageLoader:
 
         return package
 
-
+    # Translates restriction codes from the csv into restriction types and data
     def parse_note(self, package, notes):
         package.note = notes.split(":")
 
@@ -59,6 +63,7 @@ class PackageLoader:
             case "404":
                 package.restriction_type = RestrictionType.WRONG_ADDRESS
 
+        # Some restrictions contain multiple package ids
         if "," in package.note[1]:
             package.restriction_data = package.note[1].split(",")
             for value in range(len(package.restriction_data)):
@@ -67,6 +72,7 @@ class PackageLoader:
             package.restriction_data = int(package.note[1])
             
 
+    # Converts a clock time into minutes since midnight
     def hr_to_min(self, time):
         time = time.strip().lower()
 
@@ -115,7 +121,9 @@ class PackageLoader:
         # Load Truck 1
         for package_id in truck1_ids:
             package = self.package_table.get(package_id)
+            package.assigned_to_truck = 1
 
+            # packages with deadlines are delivered before end of day packages
             if package.deadline is not None:
                 truck1.priority_packages.append(package)
             else:
@@ -124,6 +132,7 @@ class PackageLoader:
         # Load Truck 2
         for package_id in truck2_ids:
             package = self.package_table.get(package_id)
+            package.assigned_to_truck = 2
 
             if package.deadline is not None:
                 truck2.priority_packages.append(package)
@@ -133,6 +142,7 @@ class PackageLoader:
         # Load Truck 3
         for package_id in truck3_ids:
             package = self.package_table.get(package_id)
+            package.assigned_to_truck = 3 
 
             if package.deadline is not None:
                 truck3.priority_packages.append(package)

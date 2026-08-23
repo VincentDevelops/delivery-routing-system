@@ -1,5 +1,7 @@
 # Package.py
 
+# Represents a single delivery package and stores all data
+# needed for routing, restrictions, status, and delivery history
 class Package:
     def __init__(self, id):
         self.__id = id
@@ -17,7 +19,7 @@ class Package:
         self.full_address = None
         self.assigned_to_truck = None
 
-
+    # Package ID is read-only after creation
     @property
     def id(self):
         return self.__id

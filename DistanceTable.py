@@ -2,6 +2,8 @@
 
 import csv
 
+
+# Stores all delivery addresses and the distances between them
 class DistanceTable:
     def __init__(self):
         self.size = 27
@@ -12,7 +14,9 @@ class DistanceTable:
         # list of all addresses
         self.addresses = []
 
-    # returns the distance between two addresses provided as strings
+    # Returns the distance between two addresses.
+    # The distance table is triangular, so if one direction is blank,
+    # the reverse direction is checked.    
     def get_distance_between(self, address1, address2):
         address1_index = self.get_index(address1)
         address2_index = self.get_index(address2)
@@ -24,13 +28,11 @@ class DistanceTable:
 
         return distance
 
-    # returns the index for addresses associated with the provided address
+    # Returns the index of an address in the address list.    
     def get_index(self, address):
         return self.addresses.index(address)
     
-    
-
-    # assumes csv file is in specific format
+    # Loads the triangular distance table from the provided CSV file.    
     def load_distances(self, file_path):
         with open(file_path, 'r') as file:
             csvreader = csv.reader(file)
@@ -49,7 +51,7 @@ class DistanceTable:
 
                 i += 1
 
-    #assumes csv is in specific format
+    # Loads delivery addresses from the provided CSV file.    
     def load_addresses(self, file_path):
         with open(file_path, 'r') as file:
             csvreader = csv.reader(file)
