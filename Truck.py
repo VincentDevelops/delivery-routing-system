@@ -3,13 +3,13 @@
 from DeliveryStatus import DeliveryStatus
 
 class Truck:
-    def __init__(self, truck_number, time, location, distance_table):
+    def __init__(self, truck_number, time, location, distance_table, package_table):
         
         self.__number = truck_number
         self.__start_time = time
         self.__speed = 18 # mph
         self.__distance_table = distance_table
-        self.__capacity = 16 # max amount of packages per truck
+        self.__package_table = package_table
 
         self.packages = []
         self.priority_packages = []
@@ -47,12 +47,11 @@ class Truck:
     def deliver_package(self):
         print(f"Truck {self.number} delivered Package #{self.current_delivery.id} at {self.min_to_hr(self.current_time)}")
         self.current_delivery.status = DeliveryStatus.DELIVERED
+        self.current_delivery.delivery_time = self.current_time
 
     def deliver_packages(self):
         self.nearest_neighbor_delivery(self.priority_packages)
         self.nearest_neighbor_delivery(self.packages)
-        print()
-
 
     def deliver_priority_packages(self):
         self.nearest_neighbor_delivery(self.priority_packages)
@@ -62,6 +61,17 @@ class Truck:
 
     def nearest_neighbor_delivery(self, packages):
         while (len(packages) != 0):
+            if self.current_time >= 620:
+                pkg = self.__package_table.get(9)
+                if pkg.address != "410 S State St":
+                    pkg.address = "410 S State St"
+                    pkg.city = "Salt Lake City"
+                    pkg.zip = "84111"
+                    pkg.full_address = "410 S State St (84111)"
+                    print()
+                    print("PACKAGE #9 ADDRESS UPDATED")
+                    print()
+
             closest_package = min(
                 packages,
                 key=lambda package: self.__distance_table.get_distance_between(
@@ -71,7 +81,6 @@ class Truck:
             )
 
             self.current_delivery = closest_package
-            self.current_delivery.status = DeliveryStatus.EN_ROUTE
             self.travel_to(self.current_delivery.full_address)
             self.deliver_package()    
             packages.remove(self.current_delivery)
@@ -94,3 +103,9 @@ class Truck:
             hour = 12
 
         return f"{hour}:{minute:02d} {period}"
+    
+    def set_packages_en_route(self, packages):
+        for package in packages:
+            package.status = DeliveryStatus.EN_ROUTE
+            package.departure_time = self.current_time
+            print(f"Package #{package.id} en route at {self.min_to_hr(self.current_time)} in Truck #{self.number}")
