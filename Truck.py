@@ -35,17 +35,13 @@ class Truck:
         return len(self.packages) == 0 and len(self.priority_packages) == 0
 
     def travel_to(self, location):
-        print(f"Truck {self.number} leaving {self.location} at {self.min_to_hr(self.current_time)}")
-
         distance = self.__distance_table.get_distance_between(self.location, location)
         self.update_time(distance)
         self.total_mileage += distance
         self.location = location
 
-        print(f"Truck {self.number} arrived at {self.location} at {self.min_to_hr(self.current_time)}")
 
     def deliver_package(self):
-        print(f"Truck {self.number} delivered Package #{self.current_delivery.id} at {self.min_to_hr(self.current_time)}")
         self.current_delivery.status = DeliveryStatus.DELIVERED
         self.current_delivery.delivery_time = self.current_time
 
@@ -68,9 +64,6 @@ class Truck:
                     pkg.city = "Salt Lake City"
                     pkg.zip = "84111"
                     pkg.full_address = "410 S State St (84111)"
-                    print()
-                    print("PACKAGE #9 ADDRESS UPDATED")
-                    print()
 
             closest_package = min(
                 packages,
@@ -84,7 +77,6 @@ class Truck:
             self.travel_to(self.current_delivery.full_address)
             self.deliver_package()    
             packages.remove(self.current_delivery)
-            print()
 
 
     def update_time(self, distance):
@@ -108,4 +100,3 @@ class Truck:
         for package in packages:
             package.status = DeliveryStatus.EN_ROUTE
             package.departure_time = self.current_time
-            print(f"Package #{package.id} en route at {self.min_to_hr(self.current_time)} in Truck #{self.number}")
